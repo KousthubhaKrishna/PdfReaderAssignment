@@ -7,10 +7,10 @@ The final output is a json array of questions along with options and answers.
 ### Instructions to run the file
 1. Install PdfMiner with below command or use requirements.txt
 ```bash
-pip install pdfminer.six
+pip3 install pdfminer.six
 ```
 2. Run the task.py file and specify pdf file name as a cmd line argument.
 ```bash
-python task.py The_Living_World.pdf
+python3 task.py The_Living_World.pdf
 ```
 
