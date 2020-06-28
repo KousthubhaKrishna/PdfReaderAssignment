@@ -1,13 +1,12 @@
 import sys
 import re
+import json
 
 from pdfminer.high_level import extract_text
 
 def main():
 	
 	fileName = None
-	startPage = None
-	endPage = None
 
 	try:
 		fileName = sys.argv[1]
@@ -16,63 +15,56 @@ def main():
 		return
 
 	all_pages_text = extract_text(fileName)
-	#print(all_pages_text)
+	print(all_pages_text)
 
 	lines = all_pages_text.split('\n')
 	lines = list(filter(lambda a: a != "",lines))
-	#print(lines)
 
-	patterns = {
-	'question': r'\d\..',
+	#Regular Expressions
+	question_pattern = r'\d\.'
+
+	option_patterns = {
 	'option1': r'\(1\).',
 	'option2': r'\(2\).',
 	'option3': r'\(3\).',
 	'option4': r'\(4\).',
 	}
 
-	questions = []
+	answer_pattern = r'Sol\. Answer[\.]*'
+
+	data = []
+
+	#Populate Questions
 	no_of_lines = len(lines)
 	for i in range(no_of_lines):
-		res = re.search(patterns['question'],lines[i])
-		if(res):
-			questions.append(lines[i])
-	print(questions)
-
-	option1 = []
-	for i in range(no_of_lines):
-		res = re.search(patterns['option1'],lines[i])
-		if(len(lines[i])<=3 and i+1<no_of_lines):
+		res = re.search(question_pattern,lines[i])
+		if(i+1<no_of_lines and len(lines[i])<=3):
 			lines[i] += ' '+lines[i+1]
 		if(res):
-			option1.append(lines[i])
-	print(option1)
+			data.append({'question':lines[i]})
 
-	option2 = []
-	for i in range(no_of_lines):
-		res = re.search(patterns['option2'],lines[i])
-		if(len(lines[i])<=3 and i+1<no_of_lines):
-			lines[i] += ' '+lines[i+1]		
-		if(res):
-			option2.append(lines[i])
-	print(option2)
+	# Populate Options
+	for option,pattern in option_patterns.items():
+		ind = 0
+		for i in range(no_of_lines):
+			res = re.search(pattern,lines[i])
+			if(i+1<no_of_lines and len(lines[i])<=3):
+				lines[i] += ' '+lines[i+1]
+			if(res and ind < len(data)):
+				data[ind][option] = lines[i]
+				ind += 1
 
-	option3 = []
+	# Populate Anwers
+	ind = 0
 	for i in range(no_of_lines):
-		res = re.search(patterns['option3'],lines[i])
-		if(len(lines[i])<=3 and i+1<no_of_lines):
-			lines[i] += ' '+lines[i+1]		
+		res = re.search(answer_pattern,lines[i])
 		if(res):
-			option3.append(lines[i])
-	print(option3)
+			data[ind]['answer'] = lines[i]
+			ind += 1
 
-	option4 = []
-	for i in range(no_of_lines):
-		res = re.search(patterns['option4'],lines[i])
-		if(len(lines[i])<=3 and i+1<no_of_lines):
-			lines[i] += ' '+lines[i+1]
-		if(res):
-			option4.append(lines[i])
-	print(option4)
+	data = json.dumps(data, indent=4, sort_keys=True)
+	
+	#print(data)
 
 
 

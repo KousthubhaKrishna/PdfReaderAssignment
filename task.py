@@ -1,6 +1,7 @@
 import sys
 import re
 import json
+import csv
 
 from pdfminer.high_level import extract_text
 
@@ -60,11 +61,25 @@ def main():
 		res = re.search(answer_pattern,lines[i])
 		if(res):
 			data[ind]['answer'] = lines[i]
-			ind += 1
-
-	data = json.dumps(data, indent=4, sort_keys=True)
+			ind += 1 
+	  
+	data_file = open('data_file.csv', 'w') 
+	  
+	csv_writer = csv.writer(data_file) 
+	  
+	count = 0
+	  
+	for i in data: 
+	    if count == 0: 
+	        header = i.keys() 
+	        csv_writer.writerow(header) 
+	        count += 1
+	  
+	    csv_writer.writerow(i.values()) 
+	  
+	data_file.close()
 	
-	print(data)
+	#print(data)
 
 
 
