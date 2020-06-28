@@ -3,7 +3,7 @@
 The dependencies for the program are specified in <b>requirements.txt</b> file.<br/>
 I used 3 inbuilt python modules and one additional python package(PdfMiner) that helps in reading pdf files.<br/>
 I used <b>Regular Expressions</b> to extract information and they form the main part of logic.<br/>
-The final output is a json array of questions along with options and answers.
+The final output is a csv file named <b>data_file.csv</b> having questions along with options and answers.
 
 ### Instructions to run the file
 1. Install PdfMiner with below command or use requirements.txt
